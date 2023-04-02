@@ -17,9 +17,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Success      bool   `json:"success"`
-	Token        string `json:"token,omitempty"`
-	CreationDate int16  `json:"creationDate,omitempty"`
+	Success bool          `json:"success"`
+	User    database.User `json:"user,omitempty"`
 }
 
 func LoginFunction(writer http.ResponseWriter, request *http.Request) {
@@ -135,10 +134,14 @@ func LoginFunction(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 
+		// update user and hide password and salt from response
+		user.Token = token
+		user.Password = ""
+		user.PasswordSalt = ""
+
 		response := LoginResponse{
-			Success:      true,
-			Token:        token,
-			CreationDate: int16(user.CreatedAt),
+			Success: true,
+			User:    *user,
 		}
 
 		// marshal the response into json

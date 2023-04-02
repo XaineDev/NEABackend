@@ -142,5 +142,6 @@ func setupEndpoints() error {
 	})
 	router.Post("/api/login", api.LoginFunction)
 	router.Post("/api/register", api.RegisterFunction)
+	router.Post("/api/createBook", api.CreateBookFunction)
 	return nil
 }

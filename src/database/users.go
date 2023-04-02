@@ -1,13 +1,14 @@
 package database
 
 type User struct {
-	Id           int    `json:"id"`           // id of the user
-	Username     string `json:"username"`     // username for logging in
-	Password     string `json:"password"`     // hashed password for logging in, hashed using argon2id
-	PasswordSalt string `json:"passwordSalt"` // salt used for hashing the password
-	Token        string `json:"token"`        // token used for fetching / updating information needing an account
-	CreatedAt    int    `json:"created_at"`   // unix timestamp of account creation
-	IsAdmin      bool   `json:"isAdmin"`      // if the user is an admin
+	Id           int    `json:"id"`                     // id of the user
+	Username     string `json:"username"`               // username for logging in
+	Password     string `json:"password,omitempty"`     // hashed password for logging in, hashed using argon2id
+	PasswordSalt string `json:"passwordSalt,omitempty"` // salt used for hashing the password
+	Token        string `json:"token"`                  // token used for fetching / updating information needing an account
+	CreatedAt    int    `json:"created_at"`             // unix timestamp of account creation
+	IsAdmin      bool   `json:"isAdmin"`                // if the user is an admin
+	CurrentBooks []Book `json:"currentBooks"`           // books the user is currently owner of
 }
 
 func CreateUsersTable() error {
