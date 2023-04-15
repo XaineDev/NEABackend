@@ -140,8 +140,13 @@ func setupEndpoints() error {
 		writer.WriteHeader(http.StatusMethodNotAllowed)
 		http.ServeFile(writer, request, "public/405.html")
 	})
+
 	router.Post("/api/login", api.LoginFunction)
 	router.Post("/api/register", api.RegisterFunction)
 	router.Post("/api/createBook", api.CreateBookFunction)
+	router.Post("/api/getBooks", api.GetBooksFunction)
+	router.Post("/api/claimBook", api.ClaimBookFunction)
+	router.Post("/api/unclaimBook", api.UnclaimBookFunction)
+
 	return nil
 }

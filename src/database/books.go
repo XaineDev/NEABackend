@@ -20,3 +20,12 @@ func CreateBooksTable() error {
 	)
 	return err
 }
+
+func (book *Book) IsAvailable() bool {
+	return book.CurrentOwner == ""
+}
+
+func (book *Book) Update() error {
+	err := DatabaseConnection.UpdateBook(book)
+	return err
+}

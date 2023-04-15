@@ -1,7 +1,7 @@
 package database
 
 type User struct {
-	Id           int    `json:"id"`                     // id of the user
+	ID           int    `json:"id"`                     // id of the user
 	Username     string `json:"username"`               // username for logging in
 	Password     string `json:"password,omitempty"`     // hashed password for logging in, hashed using argon2id
 	PasswordSalt string `json:"passwordSalt,omitempty"` // salt used for hashing the password

@@ -1,10 +1,14 @@
 package api
 
 import (
+	"NEABackend/src/database"
+	"NEABackend/src/util"
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 type GetProfilePictureRequest struct {
@@ -12,6 +16,9 @@ type GetProfilePictureRequest struct {
 }
 
 type GetProfilePictureResponse struct {
+	Success   bool   `json:"success"`
+	Error     string `json:"error,omitempty"`
+	ImageData string `json:"image_data,omitempty"`
 }
 
 var GetProfilePictureFunction = func(writer http.ResponseWriter, request *http.Request) {
@@ -58,7 +65,73 @@ var GetProfilePictureFunction = func(writer http.ResponseWriter, request *http.R
 	}
 
 	// check to see if the user exists in the database
+	user, err := database.DatabaseConnection.GetUserByUsername(receivedRequest.ProfileUsername)
+	if err != nil {
+		// return 500 if there is an error getting the user from the database
+		writer.WriteHeader(http.StatusInternalServerError)
+		_, err = writer.Write([]byte(`{"success": false, "error": "internal server error"}`))
+		if err != nil {
+			log.Println("Error writing response: " + err.Error())
+		}
+		return
+	}
 
-	// get the users profile picture from the data folder
+	if user == nil {
+		// return 400 if the user does not exist
+		writer.WriteHeader(http.StatusBadRequest)
+		_, err = writer.Write([]byte(`{"success": false, "error": "user not found"}`))
+		if err != nil {
+			log.Println("Error writing response: " + err.Error())
+		}
+		return
+	}
+
+	// check if user has a profile picture
+	// profile pictures are stored as the userid.png in the data/profiles folder
+
+	imageData, err := util.GetImageAsBase64String("data/profiles/" + strconv.Itoa(user.ID) + ".png")
+	if err != nil {
+		if err == os.ErrNotExist {
+			// return 400 if the image does not exist
+			writer.WriteHeader(http.StatusBadRequest)
+			_, err = writer.Write([]byte(`{"success": false, "error": "profile picture not found"}`))
+			if err != nil {
+				log.Println("Error writing response: " + err.Error())
+			}
+			return
+		}
+		// return 500 if there is an unknown error getting the image
+		writer.WriteHeader(http.StatusInternalServerError)
+		_, err = writer.Write([]byte(`{"success": false, "error": "internal server error"}`))
+		if err != nil {
+			log.Println("Error writing response: " + err.Error())
+		}
+		return
+	}
+
+	responseStruct := GetProfilePictureResponse{
+		Success:   true,
+		Error:     "",
+		ImageData: imageData,
+	}
+
+	// marshal the response struct into json
+	responseJson, err := json.Marshal(responseStruct)
+	if err != nil {
+		// return 500 if there is an error marshaling the response struct
+		writer.WriteHeader(http.StatusInternalServerError)
+		_, err = writer.Write([]byte(`{"success": false, "error": "internal server error"}`))
+		if err != nil {
+			log.Println("Error writing response: " + err.Error())
+		}
+		return
+	}
+
+	// write the response
+	writer.WriteHeader(http.StatusOK)
+	_, err = writer.Write(responseJson)
+	if err != nil {
+		log.Println("Error writing response: " + err.Error())
+	}
 
 }

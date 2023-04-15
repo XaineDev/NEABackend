@@ -22,7 +22,6 @@ type CreateBookResponse struct {
 func CreateBookFunction(writer http.ResponseWriter, request *http.Request) {
 	// get the struct from the request body
 	// check if the token is an admin token
-
 	var createBookRequest CreateBookRequest
 	// parse the json from the body buffer into the struct
 	bodyBuffer := make([]byte, request.ContentLength)
