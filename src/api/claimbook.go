@@ -131,7 +131,7 @@ func ClaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// update book with new owner
-	book.CurrentOwner = user.Username
+	book.CurrentOwner = user.ID
 	err = book.Update()
 	if err != nil {
 		log.Println("Error updating book: " + err.Error())

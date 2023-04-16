@@ -80,7 +80,7 @@ func (c *Connection) GetBooksFromUser(user User) ([]Book, error) {
 		if err != nil {
 			return nil, err
 		}
-		book.CurrentOwner = user.Username
+		book.CurrentOwner = user.ID
 		books = append(books, book)
 	}
 	return books, nil
@@ -144,9 +144,15 @@ func (c *Connection) GetBooks() ([]*Book, error) {
 	var books []*Book
 	for rows.Next() {
 		var book Book
-		err = rows.Scan(&book.Id, &book.Title, &book.Author, &book.CurrentOwner)
+		ownerHolder := sql.NullInt64{}
+		err = rows.Scan(&book.Id, &book.Title, &book.Author, &ownerHolder)
 		if err != nil {
 			return nil, err
+		}
+		if ownerHolder.Valid {
+			book.CurrentOwner = int(ownerHolder.Int64)
+		} else {
+			book.CurrentOwner = 0
 		}
 		books = append(books, &book)
 	}

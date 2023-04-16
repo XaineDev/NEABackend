@@ -32,6 +32,7 @@ func UnclaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	_, err := request.Body.Read(bodyBuffer)
 	if err != nil && err != io.EOF {
 		// return 500 if there is an error reading the body
+		log.Println("Error reading body: " + err.Error())
 		response.Error = "internal server error"
 		writer.WriteHeader(http.StatusInternalServerError)
 		err = util.RespondWithJson(writer, response)
@@ -96,7 +97,7 @@ func UnclaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// check book is claimed
-	if book.CurrentOwner != user.Username {
+	if book.CurrentOwner != user.ID {
 		response.Error = "you do not own this book"
 		writer.WriteHeader(http.StatusBadRequest)
 		err = util.RespondWithJson(writer, response)
@@ -109,6 +110,7 @@ func UnclaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	// unclaim book
 	err = database.DatabaseConnection.UnclaimBook(book)
 	if err != nil {
+		log.Println("Error unclaiming book: " + err.Error())
 		response.Error = "internal server error"
 		writer.WriteHeader(http.StatusInternalServerError)
 		err = util.RespondWithJson(writer, response)

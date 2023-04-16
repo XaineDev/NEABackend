@@ -4,7 +4,7 @@ type Book struct {
 	Id           int    `json:"id"`           // id of the book
 	Title        string `json:"title"`        // title of the book
 	Author       string `json:"author"`       // author of the book
-	CurrentOwner string `json:"currentOwner"` // username of current book owner. If empty, book is available for loan
+	CurrentOwner int    `json:"currentOwner"` // id of current book owner. If empty, book is available for loan
 }
 
 func CreateBooksTable() error {
@@ -22,7 +22,7 @@ func CreateBooksTable() error {
 }
 
 func (book *Book) IsAvailable() bool {
-	return book.CurrentOwner == ""
+	return book.CurrentOwner == 0
 }
 
 func (book *Book) Update() error {

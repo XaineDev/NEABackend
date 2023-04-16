@@ -58,6 +58,7 @@ func GetBooksFunction(writer http.ResponseWriter, request *http.Request) {
 	user, err := database.DatabaseConnection.GetUserByUsername(requestStruct.User.Username)
 	if err != nil {
 		// return 500 if there is an error getting the user
+		log.Println("Error getting user: " + err.Error())
 		response.Error = "internal server error"
 		writer.WriteHeader(http.StatusInternalServerError)
 		err = util.RespondWithJson(writer, response)
@@ -82,6 +83,7 @@ func GetBooksFunction(writer http.ResponseWriter, request *http.Request) {
 
 	if err != nil {
 		// return 500 if there is an error getting the books
+		log.Println("Error getting books: " + err.Error())
 		response.Error = "internal server error"
 		writer.WriteHeader(http.StatusInternalServerError)
 		err = util.RespondWithJson(writer, response)

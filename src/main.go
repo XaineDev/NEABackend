@@ -17,7 +17,7 @@ var (
 	BackendPort   = flag.String("port", "3000", "port to host the api on")
 	router        chi.Router
 	RateLimits    = map[string]time.Time{}
-	RateLimitTime = flag.Int("ratelimit", 1, "ratelimit for api requests in seconds")
+	RateLimitTime = flag.Int("ratelimit", 0, "ratelimit for api requests in milliseconds")
 )
 
 func init() {
@@ -39,7 +39,7 @@ func init() {
 
 			// check if the request is ratelimited
 			if _, ok := RateLimits[request.RemoteAddr]; ok {
-				if time.Since(RateLimits[request.RemoteAddr]) < time.Second*time.Duration(*RateLimitTime) {
+				if time.Since(RateLimits[request.RemoteAddr]) < time.Millisecond*time.Duration(*RateLimitTime) {
 					writer.WriteHeader(http.StatusTooManyRequests)
 					_, err := writer.Write([]byte(`{"error": "ratelimited"}`))
 					if err != nil {
