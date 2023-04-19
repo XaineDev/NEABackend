@@ -2,6 +2,7 @@ package main
 
 import (
 	"NEABackend/src/api"
+	api2 "NEABackend/src/api/admin"
 	"NEABackend/src/database"
 	"NEABackend/src/util"
 	"flag"
@@ -147,6 +148,9 @@ func setupEndpoints() error {
 	router.Post("/api/getBooks", api.GetBooksFunction)
 	router.Post("/api/claimBook", api.ClaimBookFunction)
 	router.Post("/api/unclaimBook", api.UnclaimBookFunction)
+	router.Post("/api/admin/fetchLogs", api2.FetchLogsFunction)
+	router.Post("/api/admin/fetchUsers", api2.FetchUsersFunction)
+	router.Post("/api/admin/forceUnclaim", api2.ForceUnclaimFunction)
 
 	return nil
 }

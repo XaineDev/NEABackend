@@ -36,6 +36,13 @@ func Startup(dataFolder string) error {
 	if err != nil {
 		log.Println("Failed to create books table: ", err)
 	}
-
+	err = CreateActionTable()
+	if err != nil {
+		log.Println("Failed to create actions table: ", err)
+	}
+	err = CreateSecurityTable()
+	if err != nil {
+		log.Println("Failed to create security table: ", err)
+	}
 	return nil
 }

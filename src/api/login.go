@@ -123,7 +123,7 @@ func LoginFunction(writer http.ResponseWriter, request *http.Request) {
 		}
 
 		// update the user's token in the database
-		err = database.DatabaseConnection.UpdateUserToken(user.Username, token)
+		err = database.DatabaseConnection.UpdateUserToken(user, token)
 		if err != nil {
 			// return 500 if there is an error reading the body
 			writer.WriteHeader(http.StatusInternalServerError)
@@ -153,6 +153,11 @@ func LoginFunction(writer http.ResponseWriter, request *http.Request) {
 			if err != nil {
 				log.Println("Error writing response: " + err.Error())
 			}
+			return
+		}
+
+		err = database.LogAction(user.ID, "login", "")
+		if err != nil {
 			return
 		}
 

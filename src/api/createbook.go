@@ -117,4 +117,13 @@ func CreateBookFunction(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		log.Println("Error writing response: " + err.Error())
 	}
+
+	user, err := database.DatabaseConnection.GetUserByToken(createBookRequest.AuthToken)
+	if err != nil {
+		log.Println("Error getting user: " + err.Error())
+	}
+	err = database.LogAction(user.ID, "created book", "book: "+(createBookRequest.Title)+" by "+(createBookRequest.Author))
+	if err != nil {
+		log.Println("Error logging action: " + err.Error())
+	}
 }

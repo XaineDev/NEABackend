@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
@@ -27,6 +28,19 @@ func RespondWithJson(writer http.ResponseWriter, v interface{}) error {
 
 func ParseJson(data []byte, v interface{}) error {
 	err := json.Unmarshal(data, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ParseRequest(request *http.Request, v interface{}) error {
+	bodyBuffer := make([]byte, request.ContentLength)
+	read, err := request.Body.Read(bodyBuffer)
+	if err != nil && err != io.EOF {
+		return err
+	}
+	err = ParseJson(bodyBuffer[:read], v)
 	if err != nil {
 		return err
 	}

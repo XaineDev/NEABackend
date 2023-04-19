@@ -96,6 +96,16 @@ func RegisterFunction(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	// get user
+	user, err := database.DatabaseConnection.GetUserByUsername(registerrequest.Username)
+	if err != nil {
+		return
+	}
+	err = database.LogAction(user.ID, "register", "")
+	if err != nil {
+		return
+	}
+
 	// return 200
 	writer.WriteHeader(http.StatusOK)
 	_, err = writer.Write([]byte(`{"success": true}`))

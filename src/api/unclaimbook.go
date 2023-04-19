@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type UnClaimBookRequest struct {
@@ -126,5 +127,10 @@ func UnclaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	response.Error = ""
 	writer.WriteHeader(http.StatusOK)
 	err = util.RespondWithJson(writer, response)
+
+	err = database.LogAction(user.ID, "unclaimed book", "book_id: "+strconv.Itoa(requestStruct.BookId))
+	if err != nil {
+		log.Println("Error logging action: " + err.Error())
+	}
 
 }

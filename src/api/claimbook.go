@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type ClaimBookRequest struct {
@@ -149,4 +150,9 @@ func ClaimBookFunction(writer http.ResponseWriter, request *http.Request) {
 	responseStruct.Error = ""
 	writer.WriteHeader(http.StatusOK)
 	err = util.RespondWithJson(writer, responseStruct)
+
+	err = database.LogAction(user.ID, "claimed book", "book_id: "+strconv.Itoa(requestStruct.BookId))
+	if err != nil {
+		log.Println("Error logging action: " + err.Error())
+	}
 }

@@ -18,9 +18,6 @@ func CreateUsersTable() error {
     				id integer primary key autoincrement, 
     				username text not null unique, 
     				admin integer not null default 0,
-    				password text not null default '',
-    				passwordSalt text not null default '',
-    				token text not null default '',
     				created_at integer not null default (strftime('%s','now'))
             	)`,
 	)

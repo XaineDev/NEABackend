@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type GetBooksRequest struct {
@@ -98,5 +99,11 @@ func GetBooksFunction(writer http.ResponseWriter, request *http.Request) {
 	response.Error = ""
 	writer.WriteHeader(http.StatusOK)
 	err = util.RespondWithJson(writer, response)
+
+	if err != nil {
+		log.Println("Error writing response: " + err.Error())
+	}
+
+	err = database.LogAction(user.ID, "get books", "fetched "+strconv.Itoa(len(books))+" books")
 
 }

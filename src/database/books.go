@@ -1,7 +1,7 @@
 package database
 
 type Book struct {
-	Id           int    `json:"id"`           // id of the book
+	ID           int    `json:"id"`           // id of the book
 	Title        string `json:"title"`        // title of the book
 	Author       string `json:"author"`       // author of the book
 	CurrentOwner int    `json:"currentOwner"` // id of current book owner. If empty, book is available for loan
